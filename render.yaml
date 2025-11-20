@@ -1,0 +1,16 @@
+if __name__ == '__main__':
+    # Initialize database on first run
+    if not os.path.exists(DATABASE):
+        print("🔧 First run detected - initializing database...")
+        init_database()
+    
+    print("\n" + "="*50)
+    print("🚀 Queue System Backend Server Starting...")
+    print("="*50)
+    print("📍 Server URL: http://localhost:5000")
+    print("📚 API Documentation: http://localhost:5000/")
+    print("👤 Default Admin - Username: admin | Password: admin123")
+    print("="*50 + "\n")
+    
+    # Run Flask app
+    app.run(debug=True, host='0.0.0.0', port=5000)
