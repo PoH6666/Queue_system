@@ -9,8 +9,8 @@ import os
 app = Flask(__name__)
 CORS(app)  # Allow mobile app to connect
 
-# Database file
-DATABASE = 'queue_system.db'
+# Database file - use environment variable for Railway volume support
+DATABASE = os.environ.get('DATABASE_PATH', 'queue_system.db')
 
 
 # ==================== DATABASE FUNCTIONS ====================
@@ -75,14 +75,12 @@ def init_database():
 
 # ==================== AUTO-INITIALIZE DATABASE ====================
 # This ensures database is created on first run, whether local or deployed
-if not os.path.exists(DATABASE):
-    print("🔧 Database not found. Creating...")
-    try:
-        init_database()
-    except Exception as e:
-        print(f"⚠️  Database initialization error: {e}")
-else:
-    print("✅ Database file found.")
+try:
+    # Always try to initialize - IF NOT EXISTS will prevent errors
+    print("🔧 Checking database...")
+    init_database()
+except Exception as e:
+    print(f"⚠️  Database initialization error: {e}")
 
 
 # ==================== HELPER FUNCTIONS ====================
