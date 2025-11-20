@@ -495,7 +495,6 @@ def queue_stats():
 
 
 # ==================== RUN SERVER ====================
-
 if __name__ == '__main__':
     # Initialize database on first run
     if not os.path.exists(DATABASE):
@@ -505,10 +504,13 @@ if __name__ == '__main__':
     print("\n" + "=" * 50)
     print("🚀 Queue System Backend Server Starting...")
     print("=" * 50)
-    print("📍 Server URL: http://localhost:5000")
-    print("📚 API Documentation: http://localhost:5000/")
-    print("👤 Default Admin - Username: admin | Password: admin123")
+
+    # Get port from environment (Render provides this)
+    port = int(os.environ.get('PORT', 5000))
+
+    print(f"🌐 Server running on port: {port}")
     print("=" * 50 + "\n")
 
-    # Run Flask app
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Run Flask app (debug=False for production)
+    app.run(debug=False, host='0.0.0.0', port=port)
+
