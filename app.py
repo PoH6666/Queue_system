@@ -73,6 +73,18 @@ def init_database():
     print("✅ Database initialized successfully!")
 
 
+# ==================== AUTO-INITIALIZE DATABASE ====================
+# This ensures database is created on first run, whether local or deployed
+if not os.path.exists(DATABASE):
+    print("🔧 Database not found. Creating...")
+    try:
+        init_database()
+    except Exception as e:
+        print(f"⚠️  Database initialization error: {e}")
+else:
+    print("✅ Database file found.")
+
+
 # ==================== HELPER FUNCTIONS ====================
 
 def generate_ticket_number():
@@ -500,13 +512,6 @@ if __name__ == '__main__':
     print("\n" + "=" * 50)
     print("🚀 Queue System Backend Server Starting...")
     print("=" * 50)
-    
-    # ALWAYS initialize database on startup (safe with IF NOT EXISTS)
-    print("🔧 Initializing database...")
-    try:
-        init_database()
-    except Exception as e:
-        print(f"⚠️  Database initialization error: {e}")
 
     # Get port from environment (Railway/Render provides this)
     port = int(os.environ.get('PORT', 5000))
