@@ -395,10 +395,10 @@ def call_next():
                 'message': 'Queue is empty'
             }), 404
 
-        # Update status to in-progress
+        # Update status to completed (changed from in-progress)
         cursor.execute('''
             UPDATE queue 
-            SET status = 'in-progress', called_time = CURRENT_TIMESTAMP 
+            SET status = 'completed', called_time = CURRENT_TIMESTAMP 
             WHERE id = ?
         ''', (next_person['id'],))
 
@@ -478,7 +478,7 @@ def queue_stats():
         completed_today = cursor.fetchone()['count']
 
         # Total users
-        cursor.execute('SELECT COUNT(*) as count FROM users')
+        cursor.execute('SELECT COUNT(*) as count FROM users WHERE role != "admin"')
         total_users = cursor.fetchone()['count']
 
         conn.close()
@@ -495,17 +495,20 @@ def queue_stats():
 
 
 # ==================== RUN SERVER ====================
-if __name__ == '__main__':
-    # Initialize database on first run
-    if not os.path.exists(DATABASE):
-        print("🔧 First run detected - initializing database...")
-        init_database()
 
+if __name__ == '__main__':
     print("\n" + "=" * 50)
     print("🚀 Queue System Backend Server Starting...")
     print("=" * 50)
+    
+    # ALWAYS initialize database on startup (safe with IF NOT EXISTS)
+    print("🔧 Initializing database...")
+    try:
+        init_database()
+    except Exception as e:
+        print(f"⚠️  Database initialization error: {e}")
 
-    # Get port from environment (Render provides this)
+    # Get port from environment (Railway/Render provides this)
     port = int(os.environ.get('PORT', 5000))
 
     print(f"🌐 Server running on port: {port}")
@@ -513,4 +516,3 @@ if __name__ == '__main__':
 
     # Run Flask app (debug=False for production)
     app.run(debug=False, host='0.0.0.0', port=port)
-
